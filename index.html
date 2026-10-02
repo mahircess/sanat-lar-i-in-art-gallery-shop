@@ -1,0 +1,1814 @@
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aurora — Art Marketplace for Independent Artists</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #FAFAF8;
+  --bg-card: #FFFFFF;
+  --text-primary: #1A1A1A;
+  --text-secondary: #6B6B6B;
+  --text-tertiary: #9A9A9A;
+  --border: #E8E8E4;
+  --border-light: #F0F0EC;
+  --accent: #2C2C2C;
+  --accent-hover: #444;
+  --warm: #C4A882;
+  --warm-light: #F5EDE4;
+  --success: #4A7C59;
+  --radius: 8px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.08);
+  --font-sans: 'Inter', -apple-system, sans-serif;
+  --font-serif: 'DM Serif Display', Georgia, serif;
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+a { text-decoration: none; color: inherit; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+img { max-width: 100%; display: block; }
+
+/* Typography */
+.serif { font-family: var(--font-serif); }
+.text-xs { font-size: 0.75rem; }
+.text-sm { font-size: 0.875rem; }
+.text-base { font-size: 1rem; }
+.text-lg { font-size: 1.125rem; }
+.text-xl { font-size: 1.25rem; }
+.text-2xl { font-size: 1.5rem; }
+.text-3xl { font-size: 2rem; }
+.text-4xl { font-size: 2.5rem; }
+.text-5xl { font-size: 3.5rem; }
+.text-6xl { font-size: 4.5rem; }
+.font-light { font-weight: 300; }
+.font-normal { font-weight: 400; }
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.text-secondary { color: var(--text-secondary); }
+.text-tertiary { color: var(--text-tertiary); }
+
+/* Layout */
+.container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
+.container-narrow { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+.container-wide { max-width: 1600px; margin: 0 auto; padding: 0 2rem; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.75rem 1.75rem; border-radius: var(--radius);
+  font-size: 0.9rem; font-weight: 500; transition: var(--transition);
+  white-space: nowrap;
+}
+.btn-primary {
+  background: var(--accent); color: #fff;
+}
+.btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+.btn-secondary {
+  background: transparent; color: var(--text-primary);
+  border: 1.5px solid var(--border);
+}
+.btn-secondary:hover { border-color: var(--text-primary); background: var(--bg-card); }
+.btn-ghost {
+  background: transparent; color: var(--text-primary);
+  padding: 0.5rem 1rem;
+}
+.btn-ghost:hover { background: var(--border-light); }
+.btn-lg { padding: 1rem 2.5rem; font-size: 1rem; }
+.btn-sm { padding: 0.5rem 1rem; font-size: 0.8rem; }
+
+/* Navigation */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(250,250,248,0.92); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-light);
+  transition: var(--transition);
+}
+.nav-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 2rem; max-width: 1600px; margin: 0 auto;
+}
+.nav-logo {
+  font-family: var(--font-serif); font-size: 1.5rem;
+  letter-spacing: 0.02em; color: var(--text-primary);
+}
+.nav-links {
+  display: flex; align-items: center; gap: 0.25rem;
+  list-style: none;
+}
+.nav-links a {
+  padding: 0.5rem 1rem; font-size: 0.875rem; font-weight: 400;
+  color: var(--text-secondary); transition: var(--transition);
+  border-radius: 6px;
+}
+.nav-links a:hover, .nav-links a.active {
+  color: var(--text-primary); background: var(--border-light);
+}
+.nav-actions {
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.nav-icon-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  transition: var(--transition); position: relative;
+}
+.nav-icon-btn:hover { background: var(--border-light); }
+.nav-icon-btn svg { width: 20px; height: 20px; stroke: var(--text-primary); fill: none; stroke-width: 1.5; }
+.cart-badge {
+  position: absolute; top: 4px; right: 4px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--accent); color: #fff;
+  font-size: 0.65rem; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+}
+.hamburger {
+  display: none; width: 40px; height: 40px;
+  flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+}
+.hamburger span {
+  width: 20px; height: 1.5px; background: var(--text-primary);
+  transition: var(--transition);
+}
+
+/* Mobile Nav */
+.mobile-nav {
+  display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--bg); z-index: 999; padding: 5rem 2rem 2rem;
+  flex-direction: column; gap: 0.5rem;
+}
+.mobile-nav.open { display: flex; }
+.mobile-nav a {
+  padding: 1rem 0; font-size: 1.25rem; border-bottom: 1px solid var(--border-light);
+  color: var(--text-primary);
+}
+.mobile-nav-close {
+  position: absolute; top: 1.25rem; right: 1.5rem;
+  width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+}
+
+/* Page transitions */
+.page { display: none; animation: fadeIn 0.4s ease; }
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Hero */
+.hero {
+  padding: 10rem 2rem 6rem; max-width: 1600px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;
+  align-items: center; min-height: 90vh;
+}
+.hero-content { max-width: 600px; }
+.hero-label {
+  font-size: 0.75rem; font-weight: 500; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--text-tertiary);
+  margin-bottom: 1.5rem;
+}
+.hero h1 {
+  font-family: var(--font-serif); font-size: clamp(2.5rem, 5vw, 4.5rem);
+  line-height: 1.08; font-weight: 400; margin-bottom: 1.5rem;
+  color: var(--text-primary);
+}
+.hero h1 em { font-style: italic; color: var(--warm); }
+.hero p {
+  font-size: 1.1rem; line-height: 1.7; color: var(--text-secondary);
+  margin-bottom: 2.5rem; max-width: 480px;
+}
+.hero-buttons { display: flex; gap: 1rem; flex-wrap: wrap; }
+.hero-visual {
+  position: relative; display: grid;
+  grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;
+  gap: 1rem; height: 600px;
+}
+.hero-img {
+  border-radius: var(--radius-lg); overflow: hidden;
+  position: relative;
+}
+.hero-img img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.6s ease;
+}
+.hero-img:hover img { transform: scale(1.03); }
+.hero-img:nth-child(1) { grid-row: 1 / 3; }
+.hero-img:nth-child(2) { }
+.hero-img:nth-child(3) { }
+.hero-img-tag {
+  position: absolute; bottom: 1rem; left: 1rem;
+  background: rgba(255,255,255,0.9); backdrop-filter: blur(10px);
+  padding: 0.4rem 0.8rem; border-radius: 20px;
+  font-size: 0.75rem; font-weight: 500;
+}
+
+/* Section styles */
+.section { padding: 6rem 0; }
+.section-header {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 3rem; flex-wrap: wrap; gap: 1rem;
+}
+.section-label {
+  font-size: 0.75rem; font-weight: 500; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--text-tertiary);
+  margin-bottom: 0.75rem;
+}
+.section-title {
+  font-family: var(--font-serif); font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 400; line-height: 1.2;
+}
+.section-subtitle {
+  font-size: 1rem; color: var(--text-secondary); max-width: 500px;
+  margin-top: 0.5rem;
+}
+
+/* Artwork Grid */
+.artwork-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+.artwork-card {
+  background: var(--bg-card); border-radius: var(--radius-lg);
+  overflow: hidden; transition: var(--transition);
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+}
+.artwork-card:hover {
+  transform: translateY(-4px); box-shadow: var(--shadow-lg);
+  border-color: var(--border);
+}
+.artwork-card-img {
+  position: relative; overflow: hidden; aspect-ratio: 4/5;
+  background: var(--border-light);
+}
+.artwork-card-img img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.6s ease;
+}
+.artwork-card:hover .artwork-card-img img { transform: scale(1.05); }
+.artwork-fav {
+  position: absolute; top: 1rem; right: 1rem;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(255,255,255,0.9); backdrop-filter: blur(10px);
+  display: flex; align-items: center; justify-content: center;
+  transition: var(--transition);
+}
+.artwork-fav:hover { transform: scale(1.1); }
+.artwork-fav svg { width: 18px; height: 18px; stroke: var(--text-primary); fill: none; stroke-width: 1.5; transition: var(--transition); }
+.artwork-fav.active svg { fill: #E74C3C; stroke: #E74C3C; }
+.artwork-fav.active { animation: heartPop 0.4s ease; }
+@keyframes heartPop { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
+.artwork-card-info { padding: 1.25rem; }
+.artwork-card-title {
+  font-family: var(--font-serif); font-size: 1.1rem;
+  margin-bottom: 0.25rem;
+}
+.artwork-card-artist { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.75rem; }
+.artwork-card-meta {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.artwork-card-price { font-weight: 600; font-size: 0.95rem; }
+.artwork-card-medium { font-size: 0.75rem; color: var(--text-tertiary); }
+
+/* Masonry */
+.masonry-grid {
+  columns: 3; column-gap: 1.5rem;
+}
+.masonry-item {
+  break-inside: avoid; margin-bottom: 1.5rem;
+  background: var(--bg-card); border-radius: var(--radius-lg);
+  overflow: hidden; border: 1px solid var(--border-light);
+  transition: var(--transition); cursor: pointer;
+}
+.masonry-item:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.masonry-item img { width: 100%; display: block; }
+
+/* Categories */
+.categories-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;
+}
+.category-card {
+  position: relative; border-radius: var(--radius-lg); overflow: hidden;
+  aspect-ratio: 3/4; cursor: pointer;
+}
+.category-card img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.6s ease;
+}
+.category-card:hover img { transform: scale(1.08); }
+.category-card-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 1.5rem;
+}
+.category-card-overlay h3 {
+  font-family: var(--font-serif); font-size: 1.25rem; color: #fff;
+  margin-bottom: 0.25rem;
+}
+.category-card-overlay span { font-size: 0.8rem; color: rgba(255,255,255,0.8); }
+
+/* Artist Spotlight */
+.artists-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+}
+.artist-card {
+  background: var(--bg-card); border-radius: var(--radius-lg);
+  overflow: hidden; border: 1px solid var(--border-light);
+  transition: var(--transition);
+}
+.artist-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.artist-card-img {
+  aspect-ratio: 1; overflow: hidden;
+}
+.artist-card-img img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.6s ease;
+}
+.artist-card:hover .artist-card-img img { transform: scale(1.05); }
+.artist-card-info { padding: 1.5rem; }
+.artist-card-name {
+  font-family: var(--font-serif); font-size: 1.2rem; margin-bottom: 0.25rem;
+}
+.artist-card-location { font-size: 0.8rem; color: var(--text-tertiary); margin-bottom: 0.75rem; }
+.artist-card-bio { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1rem; }
+.artist-card-artworks {
+  display: flex; gap: 0.5rem; margin-bottom: 1rem;
+}
+.artist-card-artworks img {
+  width: 60px; height: 60px; object-fit: cover; border-radius: 6px;
+}
+
+/* Collections */
+.collections-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem;
+}
+.collection-card {
+  position: relative; border-radius: var(--radius-lg); overflow: hidden;
+  aspect-ratio: 16/10; cursor: pointer;
+}
+.collection-card img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.6s ease;
+}
+.collection-card:hover img { transform: scale(1.05); }
+.collection-card-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.1) 50%, transparent 100%);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 2.5rem;
+}
+.collection-card-overlay h3 {
+  font-family: var(--font-serif); font-size: 1.75rem; color: #fff;
+  margin-bottom: 0.5rem;
+}
+.collection-card-overlay p { font-size: 0.9rem; color: rgba(255,255,255,0.85); max-width: 400px; }
+
+/* Sell Section */
+.sell-section {
+  background: var(--text-primary); color: #fff;
+  border-radius: var(--radius-lg); padding: 5rem;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;
+  align-items: center; margin: 0 2rem;
+}
+.sell-section .section-label { color: rgba(255,255,255,0.5); }
+.sell-section h2 {
+  font-family: var(--font-serif); font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 400; line-height: 1.15; margin-bottom: 1rem;
+}
+.sell-section p { color: rgba(255,255,255,0.7); font-size: 1.05rem; line-height: 1.7; margin-bottom: 2rem; }
+.sell-benefits { list-style: none; margin-bottom: 2.5rem; }
+.sell-benefits li {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.75rem 0; font-size: 0.95rem; color: rgba(255,255,255,0.85);
+}
+.sell-benefits li svg { width: 20px; height: 20px; stroke: var(--warm); fill: none; stroke-width: 2; flex-shrink: 0; }
+.sell-visual {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+}
+.sell-visual img {
+  border-radius: var(--radius); width: 100%; aspect-ratio: 3/4;
+  object-fit: cover;
+}
+.sell-visual img:first-child { margin-top: 2rem; }
+
+/* Editorial */
+.editorial-grid {
+  display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 2rem;
+}
+.editorial-card {
+  position: relative; border-radius: var(--radius-lg); overflow: hidden;
+  cursor: pointer;
+}
+.editorial-card img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.6s ease;
+}
+.editorial-card:hover img { transform: scale(1.05); }
+.editorial-card-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 2rem;
+}
+.editorial-card:first-child { aspect-ratio: 4/3; }
+.editorial-card:not(:first-child) { aspect-ratio: 3/4; }
+.editorial-card-overlay .tag {
+  font-size: 0.7rem; font-weight: 500; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--warm); margin-bottom: 0.5rem;
+}
+.editorial-card-overlay h3 {
+  font-family: var(--font-serif); font-size: 1.25rem; color: #fff;
+  line-height: 1.3;
+}
+.editorial-card:first-child .editorial-card-overlay h3 { font-size: 1.75rem; }
+
+/* Discover Page */
+.discover-layout {
+  display: grid; grid-template-columns: 280px 1fr; gap: 3rem;
+  padding-top: 8rem;
+}
+.filters-sidebar {
+  position: sticky; top: 6rem; height: fit-content;
+}
+.filter-group { margin-bottom: 2rem; }
+.filter-group-title {
+  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--text-tertiary);
+  margin-bottom: 1rem;
+}
+.filter-options { display: flex; flex-direction: column; gap: 0.5rem; }
+.filter-option {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.5rem 0; font-size: 0.9rem; color: var(--text-secondary);
+  cursor: pointer; transition: var(--transition);
+}
+.filter-option:hover { color: var(--text-primary); }
+.filter-option input[type="checkbox"] {
+  width: 16px; height: 16px; accent-color: var(--accent);
+}
+.filter-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.filter-chip {
+  padding: 0.4rem 1rem; border-radius: 20px;
+  border: 1px solid var(--border); font-size: 0.8rem;
+  color: var(--text-secondary); transition: var(--transition);
+  cursor: pointer;
+}
+.filter-chip:hover, .filter-chip.active {
+  background: var(--accent); color: #fff; border-color: var(--accent);
+}
+.price-range { display: flex; gap: 0.75rem; align-items: center; }
+.price-input {
+  width: 100%; padding: 0.5rem 0.75rem; border: 1px solid var(--border);
+  border-radius: 6px; font-size: 0.85rem; font-family: inherit;
+  background: var(--bg-card);
+}
+.price-input:focus { outline: none; border-color: var(--accent); }
+
+.discover-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;
+}
+.discover-search {
+  display: flex; align-items: center; gap: 0.75rem;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 0.6rem 1rem;
+  flex: 1; max-width: 400px;
+}
+.discover-search input {
+  border: none; outline: none; font-size: 0.9rem;
+  font-family: inherit; background: transparent; width: 100%;
+}
+.discover-search svg { width: 18px; height: 18px; stroke: var(--text-tertiary); fill: none; stroke-width: 1.5; flex-shrink: 0; }
+.sort-select {
+  padding: 0.6rem 1rem; border: 1px solid var(--border);
+  border-radius: var(--radius); font-size: 0.85rem;
+  font-family: inherit; background: var(--bg-card);
+  cursor: pointer;
+}
+.mobile-filter-btn {
+  display: none; padding: 0.6rem 1rem; border: 1px solid var(--border);
+  border-radius: var(--radius); font-size: 0.85rem;
+  background: var(--bg-card);
+}
+
+/* Artwork Detail */
+.artwork-detail {
+  padding-top: 8rem; display: grid;
+  grid-template-columns: 1.2fr 1fr; gap: 4rem;
+  align-items: start;
+}
+.artwork-detail-img {
+  border-radius: var(--radius-lg); overflow: hidden;
+  position: sticky; top: 6rem;
+}
+.artwork-detail-img img {
+  width: 100%; aspect-ratio: 4/5; object-fit: cover;
+}
+.artwork-detail-info { padding: 1rem 0; }
+.artwork-detail-info .section-label { margin-bottom: 0.5rem; }
+.artwork-detail-title {
+  font-family: var(--font-serif); font-size: 2.5rem;
+  font-weight: 400; line-height: 1.2; margin-bottom: 0.5rem;
+}
+.artwork-detail-artist {
+  display: flex; align-items: center; gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+.artwork-detail-artist img {
+  width: 40px; height: 40px; border-radius: 50%; object-fit: cover;
+}
+.artwork-detail-artist-name { font-weight: 500; font-size: 0.95rem; }
+.artwork-detail-artist-loc { font-size: 0.8rem; color: var(--text-tertiary); }
+.artwork-detail-price {
+  font-size: 2rem; font-weight: 600; margin-bottom: 1.5rem;
+}
+.artwork-detail-desc {
+  font-size: 1rem; line-height: 1.8; color: var(--text-secondary);
+  margin-bottom: 2rem;
+}
+.artwork-detail-specs {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+  padding: 1.5rem 0; border-top: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 2rem;
+}
+.spec-item label {
+  font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--text-tertiary);
+  display: block; margin-bottom: 0.25rem;
+}
+.spec-item span { font-size: 0.95rem; }
+.artwork-detail-actions { display: flex; gap: 1rem; margin-bottom: 2rem; }
+.artwork-detail-actions .btn { flex: 1; justify-content: center; }
+.artwork-detail-share {
+  display: flex; gap: 0.5rem;
+}
+.share-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid var(--border); display: flex;
+  align-items: center; justify-content: center;
+  transition: var(--transition);
+}
+.share-btn:hover { background: var(--border-light); }
+.share-btn svg { width: 18px; height: 18px; stroke: var(--text-secondary); fill: none; stroke-width: 1.5; }
+
+/* Artist Profile */
+.artist-profile-header {
+  padding-top: 8rem; padding-bottom: 3rem;
+}
+.artist-cover {
+  height: 300px; border-radius: var(--radius-lg); overflow: hidden;
+  margin-bottom: -4rem;
+}
+.artist-cover img { width: 100%; height: 100%; object-fit: cover; }
+.artist-profile-info {
+  display: flex; align-items: flex-end; gap: 2rem;
+  padding: 0 2rem; position: relative; z-index: 1;
+}
+.artist-profile-avatar {
+  width: 120px; height: 120px; border-radius: 50%;
+  border: 4px solid var(--bg); overflow: hidden; flex-shrink: 0;
+}
+.artist-profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.artist-profile-details { flex: 1; }
+.artist-profile-name {
+  font-family: var(--font-serif); font-size: 2rem; margin-bottom: 0.25rem;
+}
+.artist-profile-location { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem; }
+.artist-profile-actions { display: flex; gap: 0.75rem; }
+.artist-profile-bio {
+  max-width: 700px; margin: 3rem auto 0; padding: 0 2rem;
+  font-size: 1.05rem; line-height: 1.8; color: var(--text-secondary);
+}
+.artist-profile-tabs {
+  display: flex; gap: 0; border-bottom: 1px solid var(--border);
+  margin-top: 3rem; padding: 0 2rem;
+}
+.artist-tab {
+  padding: 1rem 1.5rem; font-size: 0.9rem; color: var(--text-secondary);
+  border-bottom: 2px solid transparent; transition: var(--transition);
+  cursor: pointer;
+}
+.artist-tab:hover { color: var(--text-primary); }
+.artist-tab.active { color: var(--text-primary); border-bottom-color: var(--accent); }
+
+/* Dashboard */
+.dashboard-layout {
+  display: grid; grid-template-columns: 240px 1fr; gap: 0;
+  padding-top: 5rem; min-height: 100vh;
+}
+.dashboard-sidebar {
+  background: var(--bg-card); border-right: 1px solid var(--border-light);
+  padding: 2rem 0; position: sticky; top: 5rem; height: calc(100vh - 5rem);
+}
+.dashboard-nav { list-style: none; }
+.dashboard-nav li a {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.85rem 1.5rem; font-size: 0.9rem; color: var(--text-secondary);
+  transition: var(--transition); border-left: 3px solid transparent;
+}
+.dashboard-nav li a:hover { color: var(--text-primary); background: var(--border-light); }
+.dashboard-nav li a.active {
+  color: var(--text-primary); background: var(--border-light);
+  border-left-color: var(--accent); font-weight: 500;
+}
+.dashboard-nav li a svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+.dashboard-content { padding: 2rem 3rem; }
+.dashboard-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 2rem;
+}
+.dashboard-header h2 {
+  font-family: var(--font-serif); font-size: 1.75rem; font-weight: 400;
+}
+.stats-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+.stat-card {
+  background: var(--bg-card); border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg); padding: 1.5rem;
+}
+.stat-card label {
+  font-size: 0.75rem; font-weight: 500; letter-spacing: 0.05em;
+  text-transform: uppercase; color: var(--text-tertiary);
+}
+.stat-card .value {
+  font-size: 2rem; font-weight: 600; margin: 0.5rem 0;
+}
+.stat-card .change { font-size: 0.8rem; color: var(--success); }
+
+/* Cart & Checkout */
+.checkout-layout {
+  padding-top: 8rem; display: grid;
+  grid-template-columns: 1fr 400px; gap: 4rem;
+}
+.checkout-items { }
+.checkout-item {
+  display: flex; gap: 1.5rem; padding: 1.5rem 0;
+  border-bottom: 1px solid var(--border-light);
+}
+.checkout-item img {
+  width: 100px; height: 120px; object-fit: cover; border-radius: 8px;
+}
+.checkout-item-info { flex: 1; }
+.checkout-item-title { font-family: var(--font-serif); font-size: 1.1rem; margin-bottom: 0.25rem; }
+.checkout-item-artist { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
+.checkout-item-price { font-weight: 600; }
+.checkout-item-remove {
+  font-size: 0.8rem; color: var(--text-tertiary); margin-top: 0.5rem;
+  cursor: pointer;
+}
+.checkout-item-remove:hover { color: #E74C3C; }
+.checkout-summary {
+  background: var(--bg-card); border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg); padding: 2rem;
+  position: sticky; top: 6rem; height: fit-content;
+}
+.checkout-summary h3 {
+  font-family: var(--font-serif); font-size: 1.25rem; margin-bottom: 1.5rem;
+}
+.checkout-row {
+  display: flex; justify-content: space-between; padding: 0.75rem 0;
+  font-size: 0.9rem;
+}
+.checkout-row.total {
+  border-top: 1px solid var(--border); margin-top: 0.5rem;
+  padding-top: 1rem; font-weight: 600; font-size: 1.1rem;
+}
+
+/* Search */
+.search-overlay {
+  display: none; position: fixed; inset: 0; z-index: 2000;
+  background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+}
+.search-overlay.open { display: flex; align-items: flex-start; justify-content: center; padding-top: 8rem; }
+.search-modal {
+  background: var(--bg-card); border-radius: var(--radius-lg);
+  width: 90%; max-width: 600px; box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+.search-modal-input {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-light);
+}
+.search-modal-input svg { width: 22px; height: 22px; stroke: var(--text-tertiary); fill: none; stroke-width: 1.5; flex-shrink: 0; }
+.search-modal-input input {
+  border: none; outline: none; font-size: 1.1rem;
+  font-family: inherit; width: 100%; background: transparent;
+}
+.search-results { padding: 1rem; max-height: 400px; overflow-y: auto; }
+.search-result-item {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 0.75rem; border-radius: 8px; cursor: pointer;
+  transition: var(--transition);
+}
+.search-result-item:hover { background: var(--border-light); }
+.search-result-item img { width: 48px; height: 48px; border-radius: 6px; object-fit: cover; }
+.search-result-info h4 { font-size: 0.9rem; margin-bottom: 0.1rem; }
+.search-result-info span { font-size: 0.8rem; color: var(--text-tertiary); }
+.search-result-type {
+  margin-left: auto; font-size: 0.7rem; font-weight: 500;
+  letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--text-tertiary); background: var(--border-light);
+  padding: 0.25rem 0.6rem; border-radius: 4px;
+}
+
+/* Footer */
+.footer {
+  background: var(--text-primary); color: rgba(255,255,255,0.7);
+  padding: 5rem 2rem 2rem; margin-top: 4rem;
+}
+.footer-grid {
+  max-width: 1400px; margin: 0 auto;
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem;
+  margin-bottom: 4rem;
+}
+.footer-brand {
+  font-family: var(--font-serif); font-size: 1.5rem; color: #fff;
+  margin-bottom: 1rem;
+}
+.footer-desc { font-size: 0.9rem; line-height: 1.7; max-width: 300px; }
+.footer h4 {
+  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; color: rgba(255,255,255,0.4);
+  margin-bottom: 1.25rem;
+}
+.footer-links { list-style: none; }
+.footer-links li { margin-bottom: 0.75rem; }
+.footer-links a { font-size: 0.9rem; transition: var(--transition); }
+.footer-links a:hover { color: #fff; }
+.footer-bottom {
+  max-width: 1400px; margin: 0 auto;
+  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);
+  font-size: 0.8rem;
+}
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px);
+  background: var(--text-primary); color: #fff;
+  padding: 1rem 2rem; border-radius: var(--radius);
+  font-size: 0.9rem; z-index: 3000;
+  transition: transform 0.4s ease; box-shadow: var(--shadow-lg);
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .hero { grid-template-columns: 1fr; padding: 8rem 2rem 4rem; min-height: auto; }
+  .hero-visual { height: 400px; }
+  .categories-grid { grid-template-columns: repeat(2, 1fr); }
+  .collections-grid { grid-template-columns: 1fr; }
+  .editorial-grid { grid-template-columns: 1fr 1fr; }
+  .editorial-card:first-child { grid-column: 1 / -1; aspect-ratio: 16/9; }
+  .sell-section { grid-template-columns: 1fr; padding: 3rem; }
+  .artwork-detail { grid-template-columns: 1fr; }
+  .artwork-detail-img { position: static; }
+  .discover-layout { grid-template-columns: 1fr; }
+  .filters-sidebar { display: none; position: fixed; top: 0; left: 0; bottom: 0; width: 300px; background: var(--bg); z-index: 1500; padding: 5rem 1.5rem 2rem; overflow-y: auto; border-right: 1px solid var(--border); }
+  .filters-sidebar.open { display: block; }
+  .mobile-filter-btn { display: inline-flex; }
+  .checkout-layout { grid-template-columns: 1fr; }
+  .dashboard-layout { grid-template-columns: 1fr; }
+  .dashboard-sidebar { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--border-light); }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .hero-visual { grid-template-columns: 1fr; height: 350px; }
+  .hero-img:nth-child(1) { grid-row: auto; }
+  .artwork-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .masonry-grid { columns: 2; }
+  .categories-grid { grid-template-columns: 1fr 1fr; }
+  .artists-grid { grid-template-columns: 1fr; }
+  .editorial-grid { grid-template-columns: 1fr; }
+  .editorial-card:first-child { grid-column: auto; }
+  .sell-section { padding: 2rem; margin: 0 1rem; }
+  .section { padding: 4rem 0; }
+  .container, .container-narrow, .container-wide { padding: 0 1rem; }
+  .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
+  .artist-profile-info { flex-direction: column; align-items: flex-start; }
+  .artist-profile-avatar { width: 80px; height: 80px; }
+  .stats-grid { grid-template-columns: 1fr; }
+  .dashboard-content { padding: 1.5rem; }
+}
+
+@media (max-width: 480px) {
+  .artwork-grid { grid-template-columns: 1fr; }
+  .masonry-grid { columns: 1; }
+  .hero h1 { font-size: 2rem; }
+  .hero-buttons { flex-direction: column; }
+  .hero-buttons .btn { width: 100%; justify-content: center; }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
+
+/* Loading shimmer */
+.shimmer {
+  background: linear-gradient(90deg, var(--border-light) 25%, var(--bg) 50%, var(--border-light) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo" onclick="navigateTo('home')">Aurora</a>
+    <ul class="nav-links">
+      <li><a href="#" onclick="navigateTo('discover')" data-page="discover">Discover</a></li>
+      <li><a href="#" onclick="navigateTo('discover')" data-page="artwork">Artwork</a></li>
+      <li><a href="#" onclick="navigateTo('artists')" data-page="artists">Artists</a></li>
+      <li><a href="#" onclick="navigateTo('collections')" data-page="collections">Collections</a></li>
+      <li><a href="#" onclick="navigateTo('sell')" data-page="sell">Sell Your Art</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="nav-icon-btn" onclick="openSearch()" aria-label="Search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <button class="nav-icon-btn" onclick="navigateTo('favorites')" aria-label="Favorites">
+        <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </button>
+      <button class="nav-icon-btn" onclick="navigateTo('cart')" aria-label="Cart">
+        <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        <span class="cart-badge" id="cartBadge">2</span>
+      </button>
+      <button class="btn btn-sm btn-secondary" onclick="navigateTo('account')">Sign In</button>
+      <button class="btn btn-sm btn-primary" onclick="navigateTo('account')">Join</button>
+      <button class="hamburger" onclick="toggleMobileNav()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Nav -->
+<div class="mobile-nav" id="mobileNav">
+  <button class="mobile-nav-close" onclick="toggleMobileNav()">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+  </button>
+  <a href="#" onclick="navigateTo('home'); toggleMobileNav()">Home</a>
+  <a href="#" onclick="navigateTo('discover'); toggleMobileNav()">Discover</a>
+  <a href="#" onclick="navigateTo('artists'); toggleMobileNav()">Artists</a>
+  <a href="#" onclick="navigateTo('collections'); toggleMobileNav()">Collections</a>
+  <a href="#" onclick="navigateTo('sell'); toggleMobileNav()">Sell Your Art</a>
+  <a href="#" onclick="navigateTo('account'); toggleMobileNav()">Sign In</a>
+  <a href="#" onclick="navigateTo('dashboard'); toggleMobileNav()">Dashboard</a>
+</div>
+
+<!-- Search Overlay -->
+<div class="search-overlay" id="searchOverlay" onclick="closeSearch(event)">
+  <div class="search-modal" onclick="event.stopPropagation()">
+    <div class="search-modal-input">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Search artists, artwork, collections..." id="searchInput" oninput="handleSearch(this.value)">
+    </div>
+    <div class="search-results" id="searchResults">
+      <div class="search-result-item" onclick="navigateTo('artwork-detail'); closeSearchDirect()">
+        <img src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=100&h=100&fit=crop" alt="">
+        <div class="search-result-info"><h4>Ethereal Light</h4><span>by Maya Chen</span></div>
+        <span class="search-result-type">Artwork</span>
+      </div>
+      <div class="search-result-item" onclick="navigateTo('artist-profile'); closeSearchDirect()">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop" alt="">
+        <div class="search-result-info"><h4>James Okafor</h4><span>Contemporary Painter</span></div>
+        <span class="search-result-type">Artist</span>
+      </div>
+      <div class="search-result-item" onclick="navigateTo('collections'); closeSearchDirect()">
+        <img src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=100&h=100&fit=crop" alt="">
+        <div class="search-result-info"><h4>Quiet Minimalism</h4><span>12 artworks</span></div>
+        <span class="search-result-type">Collection</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- ==================== HOME PAGE ==================== -->
+<div class="page active" id="page-home">
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-label">Independent Art Marketplace</div>
+      <h1>Art that makes a space <em>your own.</em></h1>
+      <p>Discover original works from independent artists. Find pieces that inspire you, and give creativity a place in your world.</p>
+      <div class="hero-buttons">
+        <button class="btn btn-primary btn-lg" onclick="navigateTo('discover')">Explore Art</button>
+        <button class="btn btn-secondary btn-lg" onclick="navigateTo('artists')">Meet the Artists</button>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-img">
+        <img src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=600&h=800&fit=crop" alt="Abstract painting">
+        <span class="hero-img-tag">Featured</span>
+      </div>
+      <div class="hero-img">
+        <img src="https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=400&h=400&fit=crop" alt="Contemporary art">
+      </div>
+      <div class="hero-img">
+        <img src="https://images.unsplash.com/photo-1549490349-8643362247b5?w=400&h=400&fit=crop" alt="Minimalist art">
+        <span class="hero-img-tag">New</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Artwork -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <div class="section-label">Curated Selection</div>
+          <h2 class="section-title">Featured Artwork</h2>
+        </div>
+        <button class="btn btn-secondary" onclick="navigateTo('discover')">View All</button>
+      </div>
+      <div class="artwork-grid" id="featuredGrid"></div>
+    </div>
+  </section>
+
+  <!-- Categories -->
+  <section class="section" style="background: var(--bg-card); border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light);">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <div class="section-label">Browse by Style</div>
+          <h2 class="section-title">Explore Categories</h2>
+        </div>
+      </div>
+      <div class="categories-grid" id="categoriesGrid"></div>
+    </div>
+  </section>
+
+  <!-- Artist Spotlight -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <div class="section-label">Artist Spotlight</div>
+          <h2 class="section-title">Creators to Follow</h2>
+          <p class="section-subtitle">Meet the independent artists shaping contemporary art.</p>
+        </div>
+        <button class="btn btn-secondary" onclick="navigateTo('artists')">All Artists</button>
+      </div>
+      <div class="artists-grid" id="artistsGrid"></div>
+    </div>
+  </section>
+
+  <!-- Collections -->
+  <section class="section" style="background: var(--bg-card); border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light);">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <div class="section-label">Curated Collections</div>
+          <h2 class="section-title">Themed Galleries</h2>
+        </div>
+      </div>
+      <div class="collections-grid" id="collectionsGrid"></div>
+    </div>
+  </section>
+
+  <!-- Sell Your Art -->
+  <section class="section">
+    <div class="sell-section">
+      <div>
+        <div class="section-label">For Artists</div>
+        <h2>Your work deserves to be discovered.</h2>
+        <p>Build your presence, showcase your creativity, and connect with people who value original art. Aurora gives independent artists the platform they deserve.</p>
+        <ul class="sell-benefits">
+          <li>
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Create your artist portfolio
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Showcase and manage your artwork
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Reach potential buyers worldwide
+          </li>
+        </ul>
+        <button class="btn btn-primary btn-lg" style="background: var(--warm); color: var(--text-primary);" onclick="navigateTo('dashboard')">Start Selling</button>
+      </div>
+      <div class="sell-visual">
+        <img src="https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=300&h=400&fit=crop" alt="Artist at work">
+        <img src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=300&h=400&fit=crop" alt="Art studio">
+      </div>
+    </div>
+  </section>
+
+  <!-- Editorial -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <div class="section-label">The Journal</div>
+          <h2 class="section-title">Stories from the Studio</h2>
+          <p class="section-subtitle">Artist interviews, creative processes, and guides to living with art.</p>
+        </div>
+      </div>
+      <div class="editorial-grid" id="editorialGrid"></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">Aurora</div>
+        <p class="footer-desc">Every artist has a story. Every artwork has a place. Discover something that feels like yours.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul class="footer-links">
+          <li><a href="#" onclick="navigateTo('discover')">Discover</a></li>
+          <li><a href="#" onclick="navigateTo('artists')">Artists</a></li>
+          <li><a href="#" onclick="navigateTo('collections')">Collections</a></li>
+          <li><a href="#" onclick="navigateTo('discover')">New Arrivals</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>For Artists</h4>
+        <ul class="footer-links">
+          <li><a href="#" onclick="navigateTo('sell')">Sell Your Art</a></li>
+          <li><a href="#" onclick="navigateTo('dashboard')">Artist Dashboard</a></li>
+          <li><a href="#">Pricing</a></li>
+          <li><a href="#">Artist Guidelines</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul class="footer-links">
+          <li><a href="#">About</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">Privacy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Aurora. All rights reserved.</span>
+      <span>Made with care for artists everywhere.</span>
+    </div>
+  </footer>
+</div>
+
+<!-- ==================== DISCOVER PAGE ==================== -->
+<div class="page" id="page-discover">
+  <div class="container-wide" style="padding-top: 5rem;">
+    <div class="discover-layout">
+      <aside class="filters-sidebar" id="filtersSidebar">
+        <div class="filter-group">
+          <div class="filter-group-title">Category</div>
+          <div class="filter-chips">
+            <span class="filter-chip active" onclick="toggleChip(this)">All</span>
+            <span class="filter-chip" onclick="toggleChip(this)">Paintings</span>
+            <span class="filter-chip" onclick="toggleChip(this)">Photography</span>
+            <span class="filter-chip" onclick="toggleChip(this)">Digital</span>
+            <span class="filter-chip" onclick="toggleChip(this)">Illustration</span>
+            <span class="filter-chip" onclick="toggleChip(this)">Prints</span>
+            <span class="filter-chip" onclick="toggleChip(this)">Sculpture</span>
+          </div>
+        </div>
+        <div class="filter-group">
+          <div class="filter-group-title">Style</div>
+          <div class="filter-options">
+            <label class="filter-option"><input type="checkbox"> Abstract</label>
+            <label class="filter-option"><input type="checkbox"> Contemporary</label>
+            <label class="filter-option"><input type="checkbox"> Minimalist</label>
+            <label class="filter-option"><input type="checkbox"> Figurative</label>
+            <label class="filter-option"><input type="checkbox"> Surrealism</label>
+            <label class="filter-option"><input type="checkbox"> Landscape</label>
+          </div>
+        </div>
+        <div class="filter-group">
+          <div class="filter-group-title">Price Range</div>
+          <div class="price-range">
+            <input type="number" class="price-input" placeholder="Min" value="0">
+            <span style="color: var(--text-tertiary);">—</span>
+            <input type="number" class="price-input" placeholder="Max" value="5000">
+          </div>
+        </div>
+        <div class="filter-group">
+          <div class="filter-group-title">Orientation</div>
+          <div class="filter-options">
+            <label class="filter-option"><input type="checkbox"> Portrait</label>
+            <label class="filter-option"><input type="checkbox"> Landscape</label>
+            <label class="filter-option"><input type="checkbox"> Square</label>
+          </div>
+        </div>
+        <div class="filter-group">
+          <div class="filter-group-title">Availability</div>
+          <div class="filter-options">
+            <label class="filter-option"><input type="checkbox" checked> Available</label>
+            <label class="filter-option"><input type="checkbox"> Sold</label>
+            <label class="filter-option"><input type="checkbox"> Prints Available</label>
+          </div>
+        </div>
+        <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="showToast('Filters applied')">Apply Filters</button>
+      </aside>
+      <main>
+        <div class="discover-header">
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <button class="mobile-filter-btn" onclick="document.getElementById('filtersSidebar').classList.toggle('open')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-right: 0.5rem;"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="10" y2="18"/></svg>
+              Filters
+            </button>
+            <span class="text-sm text-secondary" id="resultCount">Showing 24 artworks</span>
+          </div>
+          <div style="display: flex; gap: 0.75rem; align-items: center;">
+            <div class="discover-search">
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input type="text" placeholder="Search artwork...">
+            </div>
+            <select class="sort-select">
+              <option>Most Recent</option>
+              <option>Price: Low to High</option>
+              <option>Price: High to Low</option>
+              <option>Most Popular</option>
+            </select>
+          </div>
+        </div>
+        <div class="artwork-grid" id="discoverGrid"></div>
+      </main>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ARTWORK DETAIL PAGE ==================== -->
+<div class="page" id="page-artwork-detail">
+  <div class="container">
+    <div class="artwork-detail">
+      <div class="artwork-detail-img">
+        <img src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800&h=1000&fit=crop" alt="Ethereal Light" id="detailMainImg">
+      </div>
+      <div class="artwork-detail-info">
+        <div class="section-label">Original Painting</div>
+        <h1 class="artwork-detail-title">Ethereal Light</h1>
+        <div class="artwork-detail-artist" onclick="navigateTo('artist-profile')" style="cursor: pointer;">
+          <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop" alt="Maya Chen">
+          <div>
+            <div class="artwork-detail-artist-name">Maya Chen</div>
+            <div class="artwork-detail-artist-loc">San Francisco, CA</div>
+          </div>
+        </div>
+        <div class="artwork-detail-price">$2,400</div>
+        <p class="artwork-detail-desc">
+          This piece explores the interplay between light and shadow, capturing a fleeting moment of tranquility. 
+          The layered brushwork creates depth and movement, inviting the viewer to discover new details with each glance. 
+          Inspired by the golden hour light of the Pacific coast.
+        </p>
+        <div class="artwork-detail-specs">
+          <div class="spec-item"><label>Medium</label><span>Oil on Canvas</span></div>
+          <div class="spec-item"><label>Dimensions</label><span>36 × 48 in</span></div>
+          <div class="spec-item"><label>Year</label><span>2024</span></div>
+          <div class="spec-item"><label>Framing</label><span>Unframed</span></div>
+          <div class="spec-item"><label>Materials</label><span>Professional grade oils</span></div>
+          <div class="spec-item"><label>Authenticity</label><span>Certificate included</span></div>
+        </div>
+        <div class="artwork-detail-actions">
+          <button class="btn btn-primary btn-lg" onclick="addToCart()">Add to Cart</button>
+          <button class="btn btn-secondary btn-lg artwork-fav-btn" onclick="toggleFavDetail(this)" style="flex: 0 0 auto; padding: 1rem 1.25rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+        </div>
+        <div class="artwork-detail-share">
+          <button class="share-btn" title="Share"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
+          <button class="share-btn" title="Copy link"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- More from this artist -->
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <div class="section-label">More from Maya Chen</div>
+          <h2 class="section-title">Related Artwork</h2>
+        </div>
+      </div>
+      <div class="artwork-grid" id="relatedGrid"></div>
+    </section>
+  </div>
+</div>
+
+<!-- ==================== ARTISTS PAGE ==================== -->
+<div class="page" id="page-artists">
+  <div class="container" style="padding-top: 8rem;">
+    <div class="section-header">
+      <div>
+        <div class="section-label">Our Community</div>
+        <h2 class="section-title">Featured Artists</h2>
+        <p class="section-subtitle">Independent creators from around the world, each with a unique voice and vision.</p>
+      </div>
+    </div>
+    <div class="artists-grid" id="allArtistsGrid"></div>
+  </div>
+</div>
+
+<!-- ==================== ARTIST PROFILE PAGE ==================== -->
+<div class="page" id="page-artist-profile">
+  <div class="artist-profile-header">
+    <div class="artist-cover">
+      <img src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=1400&h=400&fit=crop" alt="Studio">
+    </div>
+    <div class="artist-profile-info container">
+      <div class="artist-profile-avatar">
+        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop" alt="Maya Chen">
+      </div>
+      <div class="artist-profile-details">
+        <h1 class="artist-profile-name">Maya Chen</h1>
+        <div class="artist-profile-location">San Francisco, California · Joined 2021</div>
+        <div class="artist-profile-actions">
+          <button class="btn btn-primary" id="followBtn" onclick="toggleFollow(this)">Follow Artist</button>
+          <button class="btn btn-secondary">Message</button>
+        </div>
+      </div>
+    </div>
+    <p class="artist-profile-bio">
+      Maya Chen is a contemporary painter whose work explores the boundaries between abstraction and representation. 
+      Drawing inspiration from the natural landscapes of the Pacific coast, her paintings capture ephemeral moments of light 
+      and atmosphere. Her work has been featured in galleries across North America and Europe.
+    </p>
+    <div class="artist-profile-tabs container">
+      <div class="artist-tab active" onclick="switchArtistTab(this, 'portfolio')">Portfolio</div>
+      <div class="artist-tab" onclick="switchArtistTab(this, 'about')">About</div>
+      <div class="artist-tab" onclick="switchArtistTab(this, 'collections')">Collections</div>
+    </div>
+  </div>
+  <div class="container" style="padding-bottom: 4rem;">
+    <div class="artwork-grid" id="artistPortfolioGrid"></div>
+  </div>
+</div>
+
+<!-- ==================== COLLECTIONS PAGE ==================== -->
+<div class="page" id="page-collections">
+  <div class="container" style="padding-top: 8rem;">
+    <div class="section-header">
+      <div>
+        <div class="section-label">Curated by Our Team</div>
+        <h2 class="section-title">Collections</h2>
+        <p class="section-subtitle">Thoughtfully grouped artworks that tell a story together.</p>
+      </div>
+    </div>
+    <div class="collections-grid" id="allCollectionsGrid"></div>
+  </div>
+</div>
+
+<!-- ==================== SELL PAGE ==================== -->
+<div class="page" id="page-sell">
+  <div class="container" style="padding-top: 8rem; padding-bottom: 4rem;">
+    <div style="text-align: center; max-width: 700px; margin: 0 auto 4rem;">
+      <div class="section-label" style="text-align: center;">For Artists</div>
+      <h1 class="serif text-5xl" style="margin-bottom: 1rem;">Your work deserves to be discovered.</h1>
+      <p class="text-lg text-secondary" style="line-height: 1.7;">Build your presence, showcase your creativity, and connect with people who value original art. Aurora gives independent artists the platform they deserve.</p>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-bottom: 4rem;">
+      <div style="background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 2.5rem; text-align: center;">
+        <div style="width: 56px; height: 56px; border-radius: 50%; background: var(--warm-light); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--warm)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </div>
+        <h3 class="serif text-xl" style="margin-bottom: 0.75rem;">Create Your Portfolio</h3>
+        <p class="text-sm text-secondary" style="line-height: 1.7;">Build a beautiful, customizable profile that showcases your artistic journey and body of work.</p>
+      </div>
+      <div style="background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 2.5rem; text-align: center;">
+        <div style="width: 56px; height: 56px; border-radius: 50%; background: var(--warm-light); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--warm)" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        </div>
+        <h3 class="serif text-xl" style="margin-bottom: 0.75rem;">Manage Your Artwork</h3>
+        <p class="text-sm text-secondary" style="line-height: 1.7;">Upload, price, and organize your pieces with intuitive tools designed for artists.</p>
+      </div>
+      <div style="background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 2.5rem; text-align: center;">
+        <div style="width: 56px; height: 56px; border-radius: 50%; background: var(--warm-light); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--warm)" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <h3 class="serif text-xl" style="margin-bottom: 0.75rem;">Reach Buyers</h3>
+        <p class="text-sm text-secondary" style="line-height: 1.7;">Connect with art lovers and collectors who appreciate independent, original work.</p>
+      </div>
+    </div>
+    <div style="text-align: center;">
+      <button class="btn btn-primary btn-lg" onclick="navigateTo('dashboard')">Start Selling on Aurora</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CART PAGE ==================== -->
+<div class="page" id="page-cart">
+  <div class="container">
+    <div class="checkout-layout">
+      <div class="checkout-items">
+        <h2 class="serif text-3xl" style="margin-bottom: 2rem;">Your Cart</h2>
+        <div class="checkout-item">
+          <img src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=200&h=240&fit=crop" alt="Ethereal Light">
+          <div class="checkout-item-info">
+            <div class="checkout-item-title">Ethereal Light</div>
+            <div class="checkout-item-artist">by Maya Chen</div>
+            <div class="checkout-item-price">$2,400</div>
+            <div class="checkout-item-remove" onclick="this.closest('.checkout-item').remove(); updateCartTotal();">Remove</div>
+          </div>
+        </div>
+        <div class="checkout-item">
+          <img src="https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=200&h=240&fit=crop" alt="Urban Rhythm">
+          <div class="checkout-item-info">
+            <div class="checkout-item-title">Urban Rhythm</div>
+            <div class="checkout-item-artist">by James Okafor</div>
+            <div class="checkout-item-price">$1,800</div>
+            <div class="checkout-item-remove" onclick="this.closest('.checkout-item').remove(); updateCartTotal();">Remove</div>
+          </div>
+        </div>
+      </div>
+      <div class="checkout-summary">
+        <h3>Order Summary</h3>
+        <div class="checkout-row"><span>Subtotal</span><span id="checkoutSubtotal">$4,200</span></div>
+        <div class="checkout-row"><span>Shipping</span><span>Calculated at checkout</span></div>
+        <div class="checkout-row"><span>Artist support fee</span><span>Included</span></div>
+        <div class="checkout-row total"><span>Total</span><span id="checkoutTotal">$4,200</span></div>
+        <button class="btn btn-primary btn-lg" style="width: 100%; justify-content: center; margin-top: 1.5rem;" onclick="showToast('Proceeding to payment...')">Proceed to Checkout</button>
+        <p class="text-xs text-tertiary" style="text-align: center; margin-top: 1rem;">Secure payment · Artist attribution guaranteed</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ACCOUNT PAGE ==================== -->
+<div class="page" id="page-account">
+  <div class="container" style="padding-top: 8rem; max-width: 500px;">
+    <div style="text-align: center; margin-bottom: 3rem;">
+      <div class="nav-logo serif text-4xl" style="margin-bottom: 0.5rem;">Aurora</div>
+      <p class="text-secondary">Sign in to your account or create a new one.</p>
+    </div>
+    <div style="background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 2.5rem;">
+      <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; background: var(--border-light); border-radius: 8px; padding: 4px;">
+        <button class="btn btn-sm" style="flex: 1; justify-content: center; background: var(--bg-card); box-shadow: var(--shadow-sm);" id="signinTab" onclick="switchAuthTab('signin')">Sign In</button>
+        <button class="btn btn-sm" style="flex: 1; justify-content: center; color: var(--text-secondary);" id="signupTab" onclick="switchAuthTab('signup')">Create Account</button>
+      </div>
+      <div id="signinForm">
+        <div style="margin-bottom: 1.25rem;">
+          <label style="font-size: 0.8rem; font-weight: 500; display: block; margin-bottom: 0.5rem;">Email</label>
+          <input type="email" class="price-input" style="width: 100%; padding: 0.75rem 1rem;" placeholder="your@email.com">
+        </div>
+        <div style="margin-bottom: 1.5rem;">
+          <label style="font-size: 0.8rem; font-weight: 500; display: block; margin-bottom: 0.5rem;">Password</label>
+          <input type="password" class="price-input" style="width: 100%; padding: 0.75rem 1rem;" placeholder="••••••••">
+        </div>
+        <button class="btn btn-primary btn-lg" style="width: 100%; justify-content: center;" onclick="navigateTo('dashboard'); showToast('Welcome back!')">Sign In</button>
+      </div>
+      <div id="signupForm" style="display: none;">
+        <div style="margin-bottom: 1.25rem;">
+          <label style="font-size: 0.8rem; font-weight: 500; display: block; margin-bottom: 0.5rem;">Full Name</label>
+          <input type="text" class="price-input" style="width: 100%; padding: 0.75rem 1rem;" placeholder="Your name">
+        </div>
+        <div style="margin-bottom: 1.25rem;">
+          <label style="font-size: 0.8rem; font-weight: 500; display: block; margin-bottom: 0.5rem;">Email</label>
+          <input type="email" class="price-input" style="width: 100%; padding: 0.75rem 1rem;" placeholder="your@email.com">
+        </div>
+        <div style="margin-bottom: 1.5rem;">
+          <label style="font-size: 0.8rem; font-weight: 500; display: block; margin-bottom: 0.5rem;">Password</label>
+          <input type="password" class="price-input" style="width: 100%; padding: 0.75rem 1rem;" placeholder="••••••••">
+        </div>
+        <button class="btn btn-primary btn-lg" style="width: 100%; justify-content: center;" onclick="navigateTo('dashboard'); showToast('Account created!')">Create Account</button>
+      </div>
+      <p class="text-xs text-tertiary" style="text-align: center; margin-top: 1.5rem;">By continuing, you agree to Aurora's Terms of Service.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== DASHBOARD PAGE ==================== -->
+<div class="page" id="page-dashboard">
+  <div class="dashboard-layout">
+    <aside class="dashboard-sidebar">
+      <ul class="dashboard-nav">
+        <li><a href="#" class="active" onclick="switchDashTab(this)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> Overview</a></li>
+        <li><a href="#" onclick="switchDashTab(this)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> My Artwork</a></li>
+        <li><a href="#" onclick="switchDashTab(this)"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg> Orders</a></li>
+        <li><a href="#" onclick="switchDashTab(this)"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Sales & Earnings</a></li>
+        <li><a href="#" onclick="switchDashTab(this)"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Analytics</a></li>
+        <li><a href="#" onclick="switchDashTab(this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Settings</a></li>
+      </ul>
+    </aside>
+    <main class="dashboard-content">
+      <div class="dashboard-header">
+        <div>
+          <h2>Welcome back, Maya</h2>
+          <p class="text-sm text-secondary">Here's what's happening with your art today.</p>
+        </div>
+        <button class="btn btn-primary" onclick="showToast('Add artwork form opened')">+ Add Artwork</button>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <label>Total Sales</label>
+          <div class="value">$12,480</div>
+          <div class="change">↑ 12% this month</div>
+        </div>
+        <div class="stat-card">
+          <label>Artworks Listed</label>
+          <div class="value">24</div>
+          <div class="change">3 new this week</div>
+        </div>
+        <div class="stat-card">
+          <label>Profile Views</label>
+          <div class="value">1,847</div>
+          <div class="change">↑ 8% this week</div>
+        </div>
+        <div class="stat-card">
+          <label>Followers</label>
+          <div class="value">342</div>
+          <div class="change">↑ 24 new</div>
+        </div>
+      </div>
+      <h3 class="serif text-xl" style="margin-bottom: 1.5rem;">Recent Orders</h3>
+      <div style="background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-lg); overflow: hidden;">
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 1rem 1.5rem; background: var(--border-light); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-tertiary);">
+          <span>Artwork</span><span>Buyer</span><span>Price</span><span>Status</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 1rem 1.5rem; align-items: center; border-bottom: 1px solid var(--border-light); font-size: 0.9rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <img src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=60&h=60&fit=crop" style="width: 48px; height: 48px; border-radius: 6px; object-fit: cover;">
+            <span>Ethereal Light</span>
+          </div>
+          <span class="text-secondary">Sarah M.</span>
+          <span>$2,400</span>
+          <span style="color: var(--success); font-weight: 500;">Shipped</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 1rem 1.5rem; align-items: center; border-bottom: 1px solid var(--border-light); font-size: 0.9rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <img src="https://images.unsplash.com/photo-1549490349-8643362247b5?w=60&h=60&fit=crop" style="width: 48px; height: 48px; border-radius: 6px; object-fit: cover;">
+            <span>Still Waters</span>
+          </div>
+          <span class="text-secondary">David K.</span>
+          <span>$1,600</span>
+          <span style="color: var(--warm); font-weight: 500;">Processing</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 1rem 1.5rem; align-items: center; font-size: 0.9rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <img src="https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=60&h=60&fit=crop" style="width: 48px; height: 48px; border-radius: 6px; object-fit: cover;">
+            <span>Golden Hour</span>
+          </div>
+          <span class="text-secondary">Emma L.</span>
+          <span>$3,200</span>
+          <span style="color: var(--success); font-weight: 500;">Delivered</span>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ==================== FAVORITES PAGE ==================== -->
+<div class="page" id="page-favorites">
+  <div class="container" style="padding-top: 8rem;">
+    <div class="section-header">
+      <div>
+        <div class="section-label">Your Collection</div>
+        <h2 class="section-title">Saved Artworks</h2>
+      </div>
+    </div>
+    <div class="artwork-grid" id="favoritesGrid"></div>
+  </div>
+</div>
+
+<script>
+// Data
+const artworks = [
+  { id: 1, title: 'Ethereal Light', artist: 'Maya Chen', price: 2400, medium: 'Oil on Canvas', img: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=500&h=625&fit=crop', category: 'Abstract' },
+  { id: 2, title: 'Urban Rhythm', artist: 'James Okafor', price: 1800, medium: 'Acrylic on Canvas', img: 'https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=500&h=625&fit=crop', category: 'Contemporary' },
+  { id: 3, title: 'Still Waters', artist: 'Elena Rossi', price: 1600, medium: 'Watercolor', img: 'https://images.unsplash.com/photo-1549490349-8643362247b5?w=500&h=625&fit=crop', category: 'Landscape' },
+  { id: 4, title: 'Fragments of Time', artist: 'Yuki Tanaka', price: 3200, medium: 'Mixed Media', img: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=500&h=625&fit=crop', category: 'Abstract' },
+  { id: 5, title: 'Morning Light', artist: 'Sofia Andersson', price: 980, medium: 'Photography', img: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=625&fit=crop', category: 'Photography' },
+  { id: 6, title: 'Bloom', artist: 'Aria Patel', price: 1200, medium: 'Digital Print', img: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=500&h=625&fit=crop', category: 'Digital' },
+  { id: 7, title: 'Silent Geometry', artist: 'Marcus Weber', price: 2100, medium: 'Oil on Canvas', img: 'https://images.unsplash.com/photo-1547891654-e66ed7ebb968?w=500&h=625&fit=crop', category: 'Minimalist' },
+  { id: 8, title: 'Coastal Dreams', artist: 'Liam O\'Brien', price: 1450, medium: 'Acrylic', img: 'https://images.unsplash.com/photo-1518998053901-5348d3961a04?w=500&h=625&fit=crop', category: 'Landscape' },
+  { id: 9, title: 'Neon Nights', artist: 'Zara Kim', price: 890, medium: 'Digital Art', img: 'https://images.unsplash.com/photo-1550684376-efcbd6e3f031?w=500&h=625&fit=crop', category: 'Digital' },
+  { id: 10, title: 'Whisper', artist: 'Ines Moreau', price: 2800, medium: 'Charcoal on Paper', img: 'https://images.unsplash.com/photo-1578926375605-eaf7559b1458?w=500&h=625&fit=crop', category: 'Figurative' },
+  { id: 11, title: 'Prism', artist: 'Kai Nakamura', price: 1750, medium: 'Oil on Canvas', img: 'https://images.unsplash.com/photo-1482160549825-59d1b23cb208?w=500&h=625&fit=crop', category: 'Abstract' },
+  { id: 12, title: 'Solitude', artist: 'Amara Johnson', price: 2200, medium: 'Photography', img: 'https://images.unsplash.com/photo-1501472312651-726afe119ff1?w=500&h=625&fit=crop', category: 'Photography' },
+];
+
+const artists = [
+  { name: 'Maya Chen', location: 'San Francisco, CA', bio: 'Contemporary painter exploring light and atmosphere through abstract expressionism.', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&h=300&fit=crop', artworks: ['https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=120&h=120&fit=crop', 'https://images.unsplash.com/photo-1549490349-8643362247b5?w=120&h=120&fit=crop', 'https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=120&h=120&fit=crop'] },
+  { name: 'James Okafor', location: 'London, UK', bio: 'Bold contemporary works that blend African heritage with urban modernity.', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop', artworks: ['https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=120&h=120&fit=crop', 'https://images.unsplash.com/photo-1547891654-e66ed7ebb968?w=120&h=120&fit=crop', 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=120&h=120&fit=crop'] },
+  { name: 'Elena Rossi', location: 'Milan, Italy', bio: 'Watercolor artist capturing the quiet beauty of Mediterranean landscapes.', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop', artworks: ['https://images.unsplash.com/photo-1549490349-8643362247b5?w=120&h=120&fit=crop', 'https://images.unsplash.com/photo-1518998053901-5348d3961a04?w=120&h=120&fit=crop', 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=120&h=120&fit=crop'] },
+  { name: 'Yuki Tanaka', location: 'Tokyo, Japan', bio: 'Mixed media artist blending traditional Japanese aesthetics with contemporary forms.', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop', artworks: ['https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=120&h=120&fit=crop', 'https://images.unsplash.com/photo-1482160549825-59d1b23cb208?w=120&h=120&fit=crop', 'https://images.unsplash.com/photo-1550684376-efcbd6e3f031?w=120&h=120&fit=crop'] },
+];
+
+const categories = [
+  { name: 'Paintings', count: '2,340 works', img: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=533&fit=crop' },
+  { name: 'Abstract Art', count: '1,820 works', img: 'https://images.unsplash.com/photo-1547891654-e66ed7ebb968?w=400&h=533&fit=crop' },
+  { name: 'Photography', count: '3,100 works', img: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=533&fit=crop' },
+  { name: 'Digital Art', count: '1,450 works', img: 'https://images.unsplash.com/photo-1550684376-efcbd6e3f031?w=400&h=533&fit=crop' },
+  { name: 'Illustrations', count: '980 works', img: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=400&h=533&fit=crop' },
+  { name: 'Prints', count: '4,200 works', img: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=400&h=533&fit=crop' },
+  { name: 'Sculpture', count: '620 works', img: 'https://images.unsplash.com/photo-1544967082-d9d25d867d66?w=400&h=533&fit=crop' },
+  { name: 'Interior Art', count: '1,100 works', img: 'https://images.unsplash.com/photo-1518998053901-5348d3961a04?w=400&h=533&fit=crop' },
+];
+
+const collections = [
+  { name: 'Quiet Minimalism', desc: 'Clean lines, muted palettes, and the power of restraint.', img: 'https://images.unsplash.com/photo-1549490349-8643362247b5?w=800&h=500&fit=crop' },
+  { name: 'Color in Motion', desc: 'Bold, expressive works that celebrate the energy of color.', img: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800&h=500&fit=crop' },
+  { name: 'Contemporary Expressions', desc: 'Fresh voices redefining what art can be today.', img: 'https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=800&h=500&fit=crop' },
+  { name: 'Art for Small Spaces', desc: 'Impactful pieces designed for intimate living.', img: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=800&h=500&fit=crop' },
+  { name: 'Emerging Artists', desc: 'Discover the next generation of creative talent.', img: 'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=800&h=500&fit=crop' },
+];
+
+const editorials = [
+  { tag: 'Studio Visit', title: 'Inside Maya Chen\'s Light-Filled Studio', img: 'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=800&h=600&fit=crop' },
+  { tag: 'Artist Interview', title: 'James Okafor on Heritage and Color', img: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=400&h=533&fit=crop' },
+  { tag: 'Guide', title: 'How to Start Collecting Art', img: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=400&h=533&fit=crop' },
+];
+
+// Render functions
+function createArtworkCard(art) {
+  return `
+    <div class="artwork-card" onclick="navigateTo('artwork-detail')">
+      <div class="artwork-card-img">
+        <img src="${art.img}" alt="${art.title}" loading="lazy">
+        <button class="artwork-fav" onclick="event.stopPropagation(); toggleFav(this)" aria-label="Favorite">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+      </div>
+      <div class="artwork-card-info">
+        <div class="artwork-card-title">${art.title}</div>
+        <div class="artwork-card-artist">by ${art.artist}</div>
+        <div class="artwork-card-meta">
+          <span class="artwork-card-price">$${art.price.toLocaleString()}</span>
+          <span class="artwork-card-medium">${art.medium}</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function createArtistCard(artist) {
+  return `
+    <div class="artist-card" onclick="navigateTo('artist-profile')">
+      <div class="artist-card-img">
+        <img src="${artist.img}" alt="${artist.name}" loading="lazy">
+      </div>
+      <div class="artist-card-info">
+        <div class="artist-card-name">${artist.name}</div>
+        <div class="artist-card-location">${artist.location}</div>
+        <div class="artist-card-bio">${artist.bio}</div>
+        <div class="artist-card-artworks">
+          ${artist.artworks.map(a => `<img src="${a}" alt="">`).join('')}
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); navigateTo('artist-profile')">View Artist</button>
+      </div>
+    </div>
+  `;
+}
+
+function createCategoryCard(cat) {
+  return `
+    <div class="category-card" onclick="navigateTo('discover')">
+      <img src="${cat.img}" alt="${cat.name}" loading="lazy">
+      <div class="category-card-overlay">
+        <h3>${cat.name}</h3>
+        <span>${cat.count}</span>
+      </div>
+    </div>
+  `;
+}
+
+function createCollectionCard(col) {
+  return `
+    <div class="collection-card" onclick="navigateTo('discover')">
+      <img src="${col.img}" alt="${col.name}" loading="lazy">
+      <div class="collection-card-overlay">
+        <h3>${col.name}</h3>
+        <p>${col.desc}</p>
+      </div>
+    </div>
+  `;
+}
+
+function createEditorialCard(ed, i) {
+  return `
+    <div class="editorial-card">
+      <img src="${ed.img}" alt="${ed.title}" loading="lazy">
+      <div class="editorial-card-overlay">
+        <span class="tag">${ed.tag}</span>
+        <h3>${ed.title}</h3>
+      </div>
+    </div>
+  `;
+}
+
+// Initialize
+function init() {
+  document.getElementById('featuredGrid').innerHTML = artworks.slice(0, 8).map(createArtworkCard).join('');
+  document.getElementById('discoverGrid').innerHTML = artworks.map(createArtworkCard).join('');
+  document.getElementById('categoriesGrid').innerHTML = categories.map(createCategoryCard).join('');
+  document.getElementById('artistsGrid').innerHTML = artists.map(createArtistCard).join('');
+  document.getElementById('allArtistsGrid').innerHTML = [...artists, ...artists].map(createArtistCard).join('');
+  document.getElementById('collectionsGrid').innerHTML = collections.slice(0, 4).map(createCollectionCard).join('');
+  document.getElementById('allCollectionsGrid').innerHTML = collections.map(createCollectionCard).join('');
+  document.getElementById('editorialGrid').innerHTML = editorials.map(createEditorialCard).join('');
+  document.getElementById('relatedGrid').innerHTML = artworks.slice(1, 5).map(createArtworkCard).join('');
+  document.getElementById('artistPortfolioGrid').innerHTML = artworks.slice(0, 6).map(createArtworkCard).join('');
+  document.getElementById('favoritesGrid').innerHTML = artworks.slice(0, 4).map(createArtworkCard).join('');
+}
+
+// Navigation
+function navigateTo(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById('page-' + page);
+  if (target) {
+    target.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  // Update nav active states
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  document.querySelectorAll(`.nav-links a[data-page="${page}"]`).forEach(a => a.classList.add('active'));
+}
+
+// Mobile nav
+function toggleMobileNav() {
+  document.getElementById('mobileNav').classList.toggle('open');
+  document.body.style.overflow = document.getElementById('mobileNav').classList.contains('open') ? 'hidden' : '';
+}
+
+// Search
+function openSearch() {
+  document.getElementById('searchOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('searchInput').focus(), 100);
+  document.body.style.overflow = 'hidden';
+}
+function closeSearch(e) {
+  if (e.target === document.getElementById('searchOverlay')) {
+    document.getElementById('searchOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+function closeSearchDirect() {
+  document.getElementById('searchOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function handleSearch(val) {
+  // Simulated search - just for demo
+}
+
+// Favorites
+function toggleFav(btn) {
+  btn.classList.toggle('active');
+  if (btn.classList.contains('active')) {
+    showToast('Added to favorites');
+  }
+}
+function toggleFavDetail(btn) {
+  btn.classList.toggle('active');
+  const svg = btn.querySelector('svg');
+  if (btn.classList.contains('active')) {
+    svg.setAttribute('fill', '#E74C3C');
+    svg.setAttribute('stroke', '#E74C3C');
+    showToast('Added to favorites');
+  } else {
+    svg.setAttribute('fill', 'none');
+    svg.setAttribute('stroke', 'currentColor');
+  }
+}
+
+// Follow
+function toggleFollow(btn) {
+  if (btn.textContent === 'Follow Artist') {
+    btn.textContent = 'Following';
+    btn.style.background = 'var(--bg-card)';
+    btn.style.color = 'var(--text-primary)';
+    btn.style.border = '1.5px solid var(--border)';
+    showToast('Following Maya Chen');
+  } else {
+    btn.textContent = 'Follow Artist';
+    btn.style.background = '';
+    btn.style.color = '';
+    btn.style.border = '';
+  }
+}
+
+// Filter chips
+function toggleChip(chip) {
+  chip.parentElement.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+}
+
+// Artist tabs
+function switchArtistTab(tab, section) {
+  tab.parentElement.querySelectorAll('.artist-tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+}
+
+// Dashboard tabs
+function switchDashTab(link) {
+  link.parentElement.parentElement.querySelectorAll('a').forEach(a => a.classList.remove('active'));
+  link.classList.add('active');
+}
+
+// Auth tabs
+function switchAuthTab(tab) {
+  if (tab === 'signin') {
+    document.getElementById('signinForm').style.display = 'block';
+    document.getElementById('signupForm').style.display = 'none';
+    document.getElementById('signinTab').style.background = 'var(--bg-card)';
+    document.getElementById('signinTab').style.boxShadow = 'var(--shadow-sm)';
+    document.getElementById('signinTab').style.color = '';
+    document.getElementById('signupTab').style.background = '';
+    document.getElementById('signupTab').style.boxShadow = '';
+    document.getElementById('signupTab').style.color = 'var(--text-secondary)';
+  } else {
+    document.getElementById('signinForm').style.display = 'none';
+    document.getElementById('signupForm').style.display = 'block';
+    document.getElementById('signupTab').style.background = 'var(--bg-card)';
+    document.getElementById('signupTab').style.boxShadow = 'var(--shadow-sm)';
+    document.getElementById('signupTab').style.color = '';
+    document.getElementById('signinTab').style.background = '';
+    document.getElementById('signinTab').style.boxShadow = '';
+    document.getElementById('signinTab').style.color = 'var(--text-secondary)';
+  }
+}
+
+// Cart
+let cartCount = 2;
+function addToCart() {
+  cartCount++;
+  document.getElementById('cartBadge').textContent = cartCount;
+  showToast('Added to cart');
+}
+function updateCartTotal() {
+  const items = document.querySelectorAll('.checkout-item');
+  let total = 0;
+  items.forEach(item => {
+    const priceText = item.querySelector('.checkout-item-price').textContent;
+    total += parseInt(priceText.replace(/[$,]/g, ''));
+  });
+  document.getElementById('checkoutSubtotal').textContent = '$' + total.toLocaleString();
+  document.getElementById('checkoutTotal').textContent = '$' + total.toLocaleString();
+}
+
+// Toast
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+// Keyboard shortcut for search
+document.addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    openSearch();
+  }
+  if (e.key === 'Escape') {
+    closeSearchDirect();
+    document.getElementById('mobileNav').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+});
+
+// Nav scroll effect
+let lastScroll = 0;
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('mainNav');
+  const scroll = window.scrollY;
+  if (scroll > 100) {
+    nav.style.boxShadow = 'var(--shadow-sm)';
+  } else {
+    nav.style.boxShadow = 'none';
+  }
+  lastScroll = scroll;
+});
+
+// Init
+init();
+</script>
+</body>
+</html>
