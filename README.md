@@ -1,1 +1,1 @@
-# sanat-lar-i-in-art-gallery-shop
+# -in-art-gallery-shop
